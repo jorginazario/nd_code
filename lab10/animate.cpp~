@@ -1,0 +1,176 @@
+#include <unistd.h>
+#include "gfx.h"
+#include <cstdlib>
+#include <time.h>
+#include <cmath>
+
+//Game rules: click 's' in the keyboard to shoot the bottom black ball at the top red spinning ball.
+//If you hit the red ball you win and an explosion of different figures occurs!
+//The game will restart automatically
+
+void motion(float &, float &, float &, float &, float &, float, float, float &, float &, char &);
+void figureExplosion();
+
+int main(){
+	
+	//initialize values
+	int wd=700, ht=600;   		//window width and height
+	float xc=50, yc=500;  		//black ball initial position							
+	float R=30;								//black ball radius
+	float r=20;								//red ball (target) radius
+	char c='1';								
+	float vx=10,vy=-10;				//Initial velocity of black ball
+	float tvx=5, tvy=-5;			//Initial velocity of triangles
+	int dt=3; 								//mult. factor of time
+	float tx=350, ty=300;  		//triangle center
+	float sx=350, sy=300;     //square center
+	float svx=-5, svy=5;			//square velocity
+	float theta=0.5, RotR=50;	
+	float x1=350, y1=100;
+	
+	
+	gfx_open(wd,ht,"Animation");  //open window
+	gfx_clear();
+	gfx_clear_color(255,255,255); //change background color to white
+	
+	while (c!='q'){
+							
+			
+		motion(xc,yc,x1,y1,R,theta,RotR,vx,vy,c);	
+		
+			if (c=='s'){
+				while (yc>0){	
+					gfx_clear();
+					gfx_color(255,0,0);	 		//draw red ball
+					gfx_circle(x1,y1,r);
+					gfx_flush();
+				
+					gfx_color(0,0,0); 			//draw black ball
+					gfx_circle(xc,yc,R);		
+					gfx_flush();
+											
+					yc=yc+vy*dt;	 					//update black ball location
+					usleep(100000);	
+					
+					//Conditions for when the black ball hits the target (red ball)
+					
+					if ((x1+r)<(xc+R) && (x1-r)>(xc-R) && (y1-r)>(yc-R) && (y1+r)<(yc+R)){
+						figureExplosion();
+						tx=350;
+						ty=300;	
+						sx=350;
+						sy=300;			
+						yc=500;		
+						break;										
+					}						
+					if ((xc-R)<(x1+r) && (xc-R)>(x1-r) && (yc-R)>(y1-r) && (yc-R)<(y1+r)){
+						figureExplosion();
+						tx=350;
+						ty=300;	
+						sx=350;
+						sy=300;			
+						yc=500;		
+						break;											
+					}	
+					if ((xc+R)>(x1-r) && (xc+R)<(x1+r) && (yc+R)>(y1-r) && (yc+R)<(y1+r)){
+						figureExplosion();		
+						tx=350;
+						ty=300;	
+						sx=350;
+						sy=300;			
+						yc=500;		
+						break;
+					}
+				}
+				
+				if (yc<=0){
+					yc=500;
+				}
+				c='1';
+			}	
+			
+	}
+	return 0;
+}
+
+void figureExplosion(){
+	gfx_clear();
+	//initialize values
+	int wd=700, ht=600;   		//window width and height
+	float tvx=5, tvy=-5;			//Initial velocity of triangles
+	int dt=3; 								//mult. factor of time
+	float tx=350, ty=300;  		//triangle center
+	float sx=350, sy=300;     //square center
+	float svx=-5, svy=5;			//square velocity
+	
+	while (tx<=wd && ty>=0){
+		gfx_clear();
+		//draw triangle
+		gfx_color(255,0,255);
+		gfx_line(tx-25,ty-25,tx+25,ty-25);
+		gfx_line(tx-25,ty-25,tx,ty+25);
+		gfx_line(tx+25,ty-25,tx,ty+25);
+		gfx_flush();														
+		tx=tx+tvx*dt;
+		ty=ty+tvy*dt;
+							
+		//draw square
+		gfx_color(0,100,0);
+		gfx_line(sx-25,sy-25,sx-25,sy+25);
+		gfx_line(sx-25,sy-25,sx+25,sy-25);
+		gfx_line(sx-25,sy+25,sx+25,sy+25);
+		gfx_line(sx+25,sy+25,sx+25,sy-25);
+		gfx_flush();
+		sx=sx+svx*dt;
+		sy=sy+svy*dt;
+				
+		usleep(55000);
+	}			
+}
+
+//This function will make the target move in a rotating motion, and the bottom black ball from side to side until the character 's' is pressed 
+void motion(float &xc, float &yc, float &x1, float &y1, float &R, float theta, float rotr, float &vx, float &vy, char &c){
+	
+	int wd=700, ht=600;   //window width and height
+	int dt=3;
+	theta=0;
+	x1=350;
+  y1=100;
+  c='1';
+	
+	for (float angle=theta; angle<=2*M_PI;angle+=(M_PI/8)){
+		gfx_clear();
+		//upper red circle in rotational motion
+		gfx_color(255,0,0);	
+		x1=rotr*cos(angle)+x1;
+		y1=rotr*sin(angle)+y1;
+		gfx_circle(x1,y1,R-10);
+		gfx_flush();
+		
+		//lower black circle in horizontal motion
+		gfx_color(0,0,0);
+		gfx_circle(xc,yc,R);
+		gfx_flush();
+		xc=xc+vx*dt;		
+		if (xc>=wd){ 
+			vx=-vx;
+			xc=wd-25;
+		}
+		if (xc<=0){
+			vx=-vx;
+			xc=25;
+		}	
+		
+		usleep(50000);
+		
+		if (gfx_event_waiting()){
+			c=gfx_wait();
+			if (c=='s'){
+				return;
+			}			
+		}
+	}
+}
+
+
+
