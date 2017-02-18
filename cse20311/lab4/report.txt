@@ -1,0 +1,22 @@
+
+The last program, from the user perspective, displays a set of options a user 
+can choose from. These options permit him to choose if he would like to see 
+the years Notre Dame football has won more than a certain amount of games 
+or how many times Notre Dame has lost a minimum amount of games, etc.
+
+Internally, the program functions in a while loop where if the option 6 (to exi) is 
+not selected it will keep runnning. If the option to "display the years with the
+minimum 'n' amount of losses" is chosen, then the if statement for that choice
+will prompt the user to select the minimum amount 'n' and then it will check all 
+years and compare the minimum value 'n' of losses with the losses of the year
+inside a for loop (to check all the years). 
+
+ALl the options are fairly simple and striaght forward and work as the one explained
+above. Their differences will be in the if statements inside the for loops to see what 
+will be checked in each array of the wins and losses each time.
+
+I verified that the output of the program was correct by checking in the list given with all the records.
+After I corroborated the first five and last five years' scores with the what the program was displaying,
+I knew it was functioning well.
+
+  

@@ -1,0 +1,27 @@
+#include "Beings.h"		//include base class header 
+#include "Orcs.h"		//derived (this) class header
+
+#include <string>
+#include <iostream>
+
+using namespace std;
+
+//constructor for the undergraduate class
+//NOTE:  we need to call the constructor of the base class using
+//member initialization list syntax; otherwise, we will need to use
+//set functions.
+
+Orcs::Orcs(string name, string skill, string kingdom): Beings(name, skill, kingdom){
+	Type = "Uruk-hai";
+	//cout<<"Derived class constructor!!"<<endl; //display message
+}
+//print function 
+void Orcs::print(){
+	cout<<"Ork Name: "<<getName()<<endl;
+        cout<<"Skill: "<<getSkill()<<endl;
+        cout<<"Kingdom: "<<getKingdom()<<endl;
+        cout <<"Quote: Find the halflings!! Argh! Find the halflings!" <<endl;
+	cout<<endl;
+}
+
+

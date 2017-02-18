@@ -1,0 +1,10 @@
+What your program is meant to do, from the user's perspective:
+
+From the user's perspective, this program is a game of Connect 4! The rules are simple: there are two players represented by the 'X' and 'O' that will try and connect 4 of their characters together before the other one does. The 4 pieces can connect horizontally, vertically, and diagonally anywhere in the board. Player 1 will go first and will have to input a column where he wants to put in his "piece", then player two will do the same and this will go on unitl there is a winner or the board is full without a winner. 
+
+
+How the program is structured, from the programmer's perspective. If there is an algorithm involved, give the pseudo-code for the algorithm:
+
+From the programmer's perspective, the program is structured into three separate main files. The column class, the board class (made out of column classes), and the main function that runs the board class until the board class exits. Each class is obviously accompanied by it's interface (.h file) and all of these are compiled together in the Makefile, responsible for compiling separate files at the same time. Most of the rules for the game are coded into the board class member functions play() and checkWin(). Inside the play() function the program decides whose turn it is first and where it is that the player inserts the piece. Through the addDisc() function, which is a member function of the column class and at the same time usable by the board class because of the class composition, we are able to insert a disc into the columnn of the board. The algroithm used to check after each and every move if one of the players had won with that last inserted disc. So the first thing we would do if we were to check the horizontal connections was check all slots and discard them if they were blank spaces. After this we would check for each and 
+
+How you evaluated the program for correctness. Did you verify that it produces correct results? If so, give examples. Are there any cases where it produces incorrect results? If so, explain why and give an example.

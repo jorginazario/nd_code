@@ -1,0 +1,277 @@
+// Juan Pablo Borrero & Jorge Nazario
+// CSE 20311
+// lab11
+//
+// fractals.cpp
+#include <iostream>
+#include <cmath>
+#include <cstdlib>
+#include "gfxnew.h"
+#include <unistd.h>
+
+using namespace std;
+
+void drawSierpinski(int,int,int,int,int,int);
+void drawtriangle(int,int,int,int,int,int);
+void drawShrinkingSquares(int,int,int);
+void drawsquare(int,int,int,int,int,int,int,int);
+void drawSpiralSquares(int,double,int);
+void drawCircularLace(int,int,int);
+void drawSnowflake(int,int,int);
+void drawTree(int,int,int,double);
+void drawFern(int,int,int,double);
+void drawSpiral(int, int, double,double,double);
+
+int main() {
+  const int wd = 800, ht = 800;
+  int x1,x2,x3,x4,y1,y2,y3,y4;
+  char c = ' ';
+  bool loop = true;
+  double angle;
+  double length, rad;
+
+  gfx_open(wd, ht, "Fractals");
+
+  while (loop) {
+    c = gfx_wait();
+    gfx_clear();
+    switch (c) {
+      case '1':  // Sierpinski Triangle
+        x1 = (wd/2)-300;
+        y1 = (ht/2)-300;
+        x2 = (wd/2)+300;
+        y2 = (ht/2)-300;
+        x3 = (wd/2);
+        y3 = (ht/2)+300;
+        drawSierpinski(x1,y1,x2,y2,x3,y3);
+        break;
+
+      case '2':  // Shrinking Squares
+        x1 = (wd/2);
+        y1 = (ht/2);
+        length = 400;
+        drawShrinkingSquares(x1,y1,length);
+        break;
+
+      case '3':  // Spiral Squares
+        rad = 400;
+        angle = 0;
+        length = 150;
+        drawSpiralSquares(rad,angle,length);
+        break;
+
+      case '4':  // Circular Lace
+        x1 = (wd/2);
+        y1 = (ht/2);
+        rad = 250;
+        drawCircularLace(x1,y1,rad);
+        break;
+
+      case '5':  // Snowflake
+        x1 = (wd/2);
+        y1 = (ht/2);
+        length = 250;
+        drawSnowflake(x1,y1,length);
+        break;
+
+      case '6':  // Tree
+        x1 = (wd/2);
+        y1 = 750;
+        length = 250;
+        angle = M_PI/2;
+        drawTree(x1,y1,length,angle);
+        break;
+
+      case '7':  // Fern
+        x1 = (wd/2);
+        y1 = 750;
+        length = 500;
+        angle = M_PI/2;
+        drawFern(x1,y1,length,angle);
+      	break;
+
+      case '8':  // Spiral of spirals
+     	rad = 400;
+      	angle = 0;
+      	length = 1.5*rad/4;
+	x1=wd/2;
+	y1=ht/2;
+      	drawSpiral(x1,y1,rad,angle,length);
+      	break;
+
+      case 'q':  // end program
+        loop = false;
+     	break;
+    }
+  }
+  return 0;
+}
+
+// Fractal 1
+void drawSierpinski(int x1, int y1, int x2, int y2, int x3, int y3){
+  // DRAW TRIANGLE
+  drawtriangle( x1, y1, x2, y2, x3, y3 );
+  if( abs(x2-x1) < 5) return; // Base case
+  // Recursive calls
+  drawSierpinski( x1, y1, (x1+x2)/2, (y1+y2)/2, (x1+x3)/2, (y1+y3)/2 );
+  drawSierpinski( (x1+x2)/2, (y1+y2)/2, x2, y2, (x2+x3)/2, (y2+y3)/2 );
+  drawSierpinski( (x1+x3)/2, (y1+y3)/2, (x2+x3)/2, (y2+y3)/2, x3, y3 );
+}
+
+void drawtriangle(int x1, int y1, int x2, int y2, int x3, int y3){
+  gfx_line(x1, y1, x2, y2);
+  gfx_line(x2, y2, x3, y3);
+  gfx_line(x3, y3, x1, y1);
+}
+
+// Fractal 2
+void drawShrinkingSquares(int x, int y, int len){
+  int x1,x2,x3,x4,y1,y2,y3,y4;
+  x1 = x - len/2;
+  y1 = y + len/2;
+  x2 = x + len/2;
+  y2 = y + len/2;
+  x3 = x + len/2;
+  y3 = y - len/2;
+  x4 = x - len/2;
+  y4 = y - len/2;
+  // DRAW SQUARE
+  drawsquare(x1,y1,x2,y2,x3,y3,x4,y4);
+  if (len < 10) return; // Base case
+  // Recursive calls
+  drawShrinkingSquares(x1,y1,len*0.47);
+  drawShrinkingSquares(x2,y2,len*0.47);
+  drawShrinkingSquares(x3,y3,len*0.47);
+  drawShrinkingSquares(x4,y4,len*0.47);
+}
+
+void drawsquare(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4){
+  gfx_line(x1, y1, x2, y2);
+  gfx_line(x2, y2, x3, y3);
+  gfx_line(x3, y3, x4, y4);
+  gfx_line(x4, y4, x1, y1);
+}
+
+// Fractal 3
+void drawSpiralSquares(int rad, double angle, int len){
+  int x,y,x1,x2,x3,x4,y1,y2,y3,y4;;
+  x = 300 + rad*cos(angle);
+  y = 300 + rad*sin(angle);
+  x1 = x - len/2;
+  y1 = y + len/2;
+  x2 = x + len/2;
+  y2 = y + len/2;
+  x3 = x + len/2;
+  y3 = y - len/2;
+  x4 = x - len/2;
+  y4 = y - len/2;
+  // DRAW SQUARE
+  drawsquare(x1,y1,x2,y2,x3,y3,x4,y4);
+  if (len < 1) return; // Base case
+  drawSpiralSquares(rad*0.9,angle + (2*M_PI/10),len*0.9);
+}
+
+//Fractal 4
+void drawCircularLace(int x, int y, int rad){
+  int x1,y1,x2,y2,x3,y3,x4,y4,x5,y5,x6,y6;
+  double a = M_PI/3;
+  // DRAW CIRCLE
+  gfx_circle(x,y,rad);
+  if (rad < 3) return; // base case
+  x1 = x + rad*cos(0*a); // new points
+  y1 = y + rad*sin(0*a);
+  x2 = x + rad*cos(1*a);
+  y2 = y + rad*sin(1*a);
+  x3 = x + rad*cos(2*a);
+  y3 = y + rad*sin(2*a);
+  x4 = x + rad*cos(3*a);
+  y4 = y + rad*sin(3*a);
+  x5 = x + rad*cos(4*a);
+  y5 = y + rad*sin(4*a);
+  x6 = x + rad*cos(5*a);
+  y6 = y + rad*sin(5*a);
+  // Recursive calls
+  drawCircularLace(x1,y1,rad/3);
+  drawCircularLace(x2,y2,rad/3);
+  drawCircularLace(x3,y3,rad/3);
+  drawCircularLace(x4,y4,rad/3);
+  drawCircularLace(x5,y5,rad/3);
+  drawCircularLace(x6,y6,rad/3);
+}
+
+// Fractal 5
+void drawSnowflake(int x, int y, int len){
+  int x1,y1,x2,y2,x3,y3,x4,y4,x5,y5,x6,y6;
+  double a = 2*M_PI/5;
+  if (len < 1) return; // base case
+  x1 = x + len*cos((0*a)+M_PI/2); // new points
+  y1 = y + len*sin((0*a)+M_PI/2);
+  x2 = x + len*cos((1*a)+M_PI/2);
+  y2 = y + len*sin((1*a)+M_PI/2);
+  x3 = x + len*cos((2*a)+M_PI/2);
+  y3 = y + len*sin((2*a)+M_PI/2);
+  x4 = x + len*cos((3*a)+M_PI/2);
+  y4 = y + len*sin((3*a)+M_PI/2);
+  x5 = x + len*cos((4*a)+M_PI/2);
+  y5 = y + len*sin((4*a)+M_PI/2);
+  gfx_line(x,y,x1,y1);
+  gfx_line(x,y,x2,y2);
+  gfx_line(x,y,x3,y3);
+  gfx_line(x,y,x4,y4);
+  gfx_line(x,y,x5,y5);
+  drawSnowflake(x1,y1,len*0.38);
+  drawSnowflake(x2,y2,len*0.38);
+  drawSnowflake(x3,y3,len*0.38);
+  drawSnowflake(x4,y4,len*0.38);
+  drawSnowflake(x5,y5,len*0.38);
+}
+
+// Fractal 6
+void drawTree(int x1,int y1, int len, double angle){
+  int x2,y2,x3,y3;
+  x2 = x1 + (len)*cos(angle);
+  y2 = y1 - (len)*sin(angle);
+  // DRAW TREE
+  gfx_line(x1,y1,x2,y2);
+  if (len < 4) return; // Base case
+  // Recursive calls
+  drawTree(x2,y2,len*2/3,angle + M_PI/5);
+  drawTree(x2,y2,len*2/3,angle - M_PI/5);
+}
+
+// Fractal 7
+void drawFern(int x1, int y1, int len, double angle){
+  int x2,y2,x3,y3,x4,y4,x5,y5;
+  x2 = x1 + (len)*cos(angle);
+  y2 = y1 - (len)*sin(angle);
+  x3 = x1 + (len)*cos(angle) - (len/4)*cos(angle);
+  y3 = y1 - (len)*sin(angle) + (len/4)*sin(angle);
+  x4 = x1 + (len)*cos(angle) - (2*len/4)*cos(angle);
+  y4 = y1 - (len)*sin(angle) + (2*len/4)*sin(angle);
+  x5 = x1 + (len)*cos(angle) - (3*len/4)*cos(angle);
+  y5 = y1 - (len)*sin(angle) + (3*len/4)*sin(angle);
+  // DRAW FERN
+  gfx_line(x1,y1,x2,y2);
+  if (len < 10) return; // Base case
+  // Recursive calls
+  drawFern(x2,y2,len/3, angle + M_PI/5);
+  drawFern(x2,y2,len/3, angle - M_PI/5);
+  drawFern(x3,y3,len/3, angle + M_PI/5);
+  drawFern(x3,y3,len/3, angle - M_PI/5);
+  drawFern(x4,y4,len/3, angle + M_PI/5);
+  drawFern(x4,y4,len/3, angle - M_PI/5);
+  drawFern(x5,y5,len/3, angle + M_PI/5);
+  drawFern(x5,y5,len/3, angle - M_PI/5);
+}
+//Fractal 8
+void drawSpiral(int x_c, int y_c, double rad, double angle, double len){
+  double x,y;
+  //DRAW SINGLE POINT
+  x = x_c + rad*cos(angle);
+  y = y_c + rad*sin(angle);
+  gfx_point(x,y);
+  if (len < 0.5) return; // Base case
+  drawSpiral(x_c, y_c,rad*0.9,angle + (2*M_PI/10),len*0.9);
+  drawSpiral(x,y,len,angle,1.5*len/4);
+}
+	

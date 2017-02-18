@@ -1,0 +1,9 @@
+Explains how the user the addition program:
+
+This is probably the easiest program anybody will use. It is a simple calculator that adds two given numbers. After running the program with the executable a.out, the user only has to input a number (it can be more than two digits), then press the Enter key to submit the number, and finally type in the second number and press Enter again. The sum will be display right underneath the last input number.
+
+Explains how the program works internelly:
+
+From the programmer's perspective, this adding calculator is built using the linked list data stucture. So, in the first part of the program you will encounter a Node struct and a List struct, which are going to be used to create our linked list. Some important reminders   
+
+Explains how the program was verified.

@@ -1,0 +1,7 @@
+
+My program from part 3 is meant to compute the dot product of two vectors. I learned this 
+computation in Calculus III to search for the directional growth of one vector to another. 
+From the programmer's perspective, the  program is structured into three parts: define 
+variables, request input for variable values, and compute dot product with formula. After 
+testing the program I corroborated that the program was correct by doing the arithmetic 
+myself.

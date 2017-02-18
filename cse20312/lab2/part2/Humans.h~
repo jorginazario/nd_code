@@ -1,0 +1,21 @@
+/* Jorge Nazario, humans.h
+2/5/2017
+
+This is the interface for a human derived class. This is an inheritance exmaple derived class for Lord of the Rings species.
+
+*/
+
+#ifndef HUMAN_H
+#define HUMAN_H
+
+#include "Beings.h"
+#include <string>
+
+class Humans : public Beings{
+	public:
+		Humans(string="empty", string="empty", string="empty");  // constructor);
+		virtual void print();
+	private:
+		string lifeLength;	//data unique to Men in Lord of the Rings
+};
+#endif
