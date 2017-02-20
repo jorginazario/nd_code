@@ -1,5 +1,0 @@
-I put in an x value and then the program runs a function from 0 to x. The y outputs are displayed 
-graphically using the "#" symbol (this was accomplished using a for loop). From the internal perspective, the program 
-works using a for loop that runs for every 0.25 values between 0 and x and then using another for loop that 
-displays the # symbols by printing a # "y" times.
-
